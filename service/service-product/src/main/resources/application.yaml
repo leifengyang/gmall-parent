@@ -1,0 +1,15 @@
+server:
+  port: 9000
+
+
+#数据源配置好
+spring:
+  zipkin:
+    base-url: http://192.168.200.100:9411/
+    sender:
+      type: web
+  datasource:
+    url: jdbc:mysql://192.168.200.100:3306/gmall_product?useSSL=false&characterEncoding=utf-8
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
