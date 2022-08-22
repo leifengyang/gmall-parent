@@ -41,7 +41,7 @@
     </properties>
 
 
-    <!--配置 dependencyManagement 锁定依赖的版本 并不是实际的依赖。-->
+    <!--配置 dependencyManagement 锁定依赖的版本 并不是实际的依赖  。-->
 
     <dependencyManagement>
         <dependencies>
