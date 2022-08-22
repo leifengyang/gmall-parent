@@ -11,7 +11,7 @@
     </modules>
 
 
-    <!--引入spring boot 父工程-->
+    <!--引入spring boot 父工程222-->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
