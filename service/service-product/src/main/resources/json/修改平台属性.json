@@ -1,0 +1,24 @@
+{
+  "id": 11,
+  "attrName": "出厂日期哈",
+  "categoryId": 2,
+  "categoryLevel": 1,
+  "attrValueList": [
+    {
+      "id": 59,
+      "valueName": "2019以前",
+      "attrId": 11,
+      "edit": true
+    },
+    {
+      "id": 61,
+      "valueName": "2021",
+      "attrId": 11
+    },
+    {
+      "valueName": "2023以后",
+      "edit": false
+    }
+  ]
+
+}

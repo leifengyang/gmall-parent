@@ -15,10 +15,10 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]': #只要有人处理请求了，这个跨域就能生效
-            allowedOrigins: #允许所有地址来源跨域
-              - "*"
-            allowedMethods: #允许所有请求方式跨域
-              - "*"
+            allowedOrigins: "*" #允许所有地址来源跨域
+            allowedMethods: "*" #允许所有请求方式跨域
+            allowedHeaders: "*" #复杂跨域的原因就是因为带来一些复杂的请求头导致，
+            allowCredentials: true #允许带一些安全标致跨域 比如：Cookie
 
 
       #所有的网关路由规则
