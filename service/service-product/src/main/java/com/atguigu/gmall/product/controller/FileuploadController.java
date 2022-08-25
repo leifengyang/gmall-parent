@@ -2,7 +2,11 @@ package com.atguigu.gmall.product.controller;
 
 
 import com.atguigu.gmall.common.result.Result;
+import com.atguigu.gmall.product.service.FileUploadService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.bouncycastle.util.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,10 +17,14 @@ import java.util.Map;
 /**
  * 文件上传
  */
+@Api(tags = "文件上传控制器")
 @RequestMapping("/admin/product")
 @RestController
 public class FileuploadController {
 
+
+    @Autowired
+    FileUploadService fileUploadService;
 
     /**
      * 文件上传功能
@@ -38,13 +46,15 @@ public class FileuploadController {
      *
      * @return
      */
+    @ApiOperation(value = "文件上传")
     @PostMapping("/fileUpload")
-    public Result fileupload(@RequestPart("file")MultipartFile file){
+    public Result fileupload(@RequestPart("file")MultipartFile file) throws Exception {
 
-        //TODO 文件上传 怎么上传到Minio？
+        //收到前端的文件流，上传给Minio。并返回这个文件在Minio中的存储地址。
+        //以后用这个地址访问，数据库保存的也是这个地址
+        String url = fileUploadService.upload(file);
 
-
-        return Result.ok();
+        return Result.ok(url);
     }
 
 

@@ -10,4 +10,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface SpuInfoService extends IService<SpuInfo> {
 
+    /**
+     * Spu信息大保存
+     * @param info
+     */
+    void saveSpuInfo(SpuInfo info);
 }

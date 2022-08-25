@@ -1,0 +1,94 @@
+{
+  "id": null,
+  "spuId": 28,
+  "price": "5999.00",
+  "skuName": "Apple iPhone 13 (A2634) 128GB 蓝色 支持移动联通电信5G 双卡双待手机",
+  "weight": "0.32kg",
+  "skuDesc": "品牌： Apple\n商品名称：AppleiPhone 13商品编号：100014352525商品毛重：320.00g商品产地：中国大陆CPU型号：A15运行内存：其他(iPhone)机身颜色：蓝色三防标准：IP68屏幕分辨率：FHD+充电功率：25W及以下机身内存：128GB机身色系：蓝色系屏幕材质：OLED直屏后摄主像素：1200万像素风格：苹果风，商务，科技",
+  "category3Id": 61,
+  "skuDefaultImg": "http://192.168.200.100:9000/gmall/2022-08-25/4fe52075a1104b5ba4b11ac15a4b79a8_1.png",
+  "tmId": 12,
+  //以上的所有值进 sku_info
+
+
+  //sku_attr_value  : 保存当前sku平台属性名和值对应关系
+  "skuAttrValueList": [
+    {
+      "attrId": "1",
+      "valueId": "6"
+    },
+    {
+      "attrId": "2",
+      "valueId": "8"
+    },
+    {
+      "attrId": "3",
+      "valueId": "19"
+    },
+    {
+      "attrId": "4",
+      "valueId": "27"
+    },
+    {
+      "attrId": "5",
+      "valueId": "46"
+    },
+    {
+      "attrId": "11",
+      "valueId": "59"
+    }
+  ],
+
+
+  //sku_sale_attr_value： 保存当前sku销售属性名和值对应关系
+  "skuSaleAttrValueList": [
+    {
+      "saleAttrValueId": "118",
+      "saleAttrValueName": "蓝色",
+      "baseSaleAttrId": "1",
+      "saleAttrName": "选择颜色"
+    },
+    {
+      "saleAttrValueId": "120",
+      "saleAttrValueName": "128G",
+      "baseSaleAttrId": "2",
+      "saleAttrName": "选择版本"
+    }
+  ],
+
+
+  //skuImageList中的所有数据保存到 sku_image
+  "skuImageList": [
+    {
+      "spuImgId": 284,
+      "imgName": "1.png",
+      "imgUrl": "http://192.168.200.100:9000/gmall/2022-08-25/4fe52075a1104b5ba4b11ac15a4b79a8_1.png",
+      "isDefault": 1
+    },
+    {
+      "spuImgId": 285,
+      "imgName": "4.png",
+      "imgUrl": "http://192.168.200.100:9000/gmall/2022-08-25/7872dec6a65249f49a96f4175e7412bf_4.png",
+      "isDefault": 0
+    },
+    {
+      "spuImgId": 286,
+      "imgName": "2.png",
+      "imgUrl": "http://192.168.200.100:9000/gmall/2022-08-25/39afc365422049b5a8af1f5a3810bdb8_2.png",
+      "isDefault": 0
+    },
+    {
+      "spuImgId": 287,
+      "imgName": "5.png",
+      "imgUrl": "http://192.168.200.100:9000/gmall/2022-08-25/ae72a6dfb90c48769fd0b49affea0fe4_5.png",
+      "isDefault": 0
+    },
+    {
+      "spuImgId": 288,
+      "imgName": "3.png",
+      "imgUrl": "http://192.168.200.100:9000/gmall/2022-08-25/7a49bdd371fd43bfbe660bf8f8548881_3.png",
+      "isDefault": 0
+    }
+  ]
+
+}

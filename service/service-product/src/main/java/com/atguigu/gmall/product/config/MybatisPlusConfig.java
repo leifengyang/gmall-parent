@@ -5,7 +5,10 @@ import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+
+@EnableTransactionManagement //开启基于注解的事务
 @Configuration //告诉springboot这是一个配置类
 public class MybatisPlusConfig {
 
