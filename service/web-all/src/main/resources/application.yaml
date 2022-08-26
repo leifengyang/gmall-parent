@@ -1,0 +1,13 @@
+server:
+  port: 7001
+
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+  zipkin:
+    base-url: http://192.168.200.100:9411/
+    sender:
+      type: web
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html

@@ -5,12 +5,47 @@
 <mapper namespace="com.atguigu.gmall.product.mapper.BaseCategory2Mapper">
 
     <resultMap id="BaseResultMap" type="com.atguigu.gmall.model.product.BaseCategory2">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="name" column="name" jdbcType="VARCHAR"/>
-            <result property="category1Id" column="category1_id" jdbcType="BIGINT"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="category1Id" column="category1_id" jdbcType="BIGINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,name,category1_id
+        id
+        ,name,category1_id
     </sql>
+
+
+    <!--  无限极不定分类怎么封装？ -->
+    <!--    定义Category树形封装规则； 三级固定封装-->
+    <resultMap id="CategoryTreeRM" type="com.atguigu.gmall.model.to.CategoryTreeTo">
+        <!--     一级分类的规则   -->
+        <id column="id" property="categoryId"></id>
+        <result column="name" property="categoryName"></result>
+        <collection property="categoryChild"
+                    ofType="com.atguigu.gmall.model.to.CategoryTreeTo">
+            <!--  二级分类封装规则 -->
+            <id column="c2_id" property="categoryId"></id>
+            <result column="c2_name" property="categoryName"></result>
+            <collection property="categoryChild"
+                        ofType="com.atguigu.gmall.model.to.CategoryTreeTo">
+                <!--  三级分类封装规则 -->
+                <id column="c3_id" property="categoryId"></id>
+                <result column="c3_name" property="categoryName"></result>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="getAllCategoryWithTree" resultMap="CategoryTreeRM">
+        select bc1.*,
+               bc2.id   c2_id,
+               bc2.name c2_name,
+               bc2.category1_id,
+               bc3.id   c3_id,
+               bc3.name c3_name,
+               bc3.category2_id
+        from base_category1 bc1
+                 left join base_category2 bc2 on bc1.id = bc2.category1_id
+                 left join base_category3 bc3 on bc2.id = bc3.category2_id
+    </select>
 </mapper>

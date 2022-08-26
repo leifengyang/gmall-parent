@@ -5,43 +5,44 @@
 <mapper namespace="com.atguigu.gmall.product.mapper.BaseAttrInfoMapper">
 
     <resultMap id="BaseResultMap" type="com.atguigu.gmall.model.product.BaseAttrInfo">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="attrName" column="attr_name" jdbcType="VARCHAR"/>
-            <result property="categoryId" column="category_id" jdbcType="BIGINT"/>
-            <result property="categoryLevel" column="category_level" jdbcType="INTEGER"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="attrName" column="attr_name" jdbcType="VARCHAR"/>
+        <result property="categoryId" column="category_id" jdbcType="BIGINT"/>
+        <result property="categoryLevel" column="category_level" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,attr_name,category_id,
+        id
+        ,attr_name,category_id,
         category_level
     </sql>
 
 
-<!--     数据库查出的每一条记录，new BaseAttrInfo()。然后把数据放到这个对象中。把这个集合返回-->
+    <!--     数据库查出的每一条记录，new BaseAttrInfo()。然后把数据放到这个对象中。把这个集合返回-->
 
-<!--  id=1  new BaseAttrInfo(1,价格,61,3,
-        剩下的封装到 attrValueList 集合
-            [new BaseAttrValue(1,0-499,1)]
-            [new BaseAttrValue(2,500-999,1)]);
-      1、mybatis 能区分出 id（id不同就能代表要不要new对象封装数据）
--->
-<!--    自定义结果集-->
+    <!--  id=1  new BaseAttrInfo(1,价格,61,3,
+            剩下的封装到 attrValueList 集合
+                [new BaseAttrValue(1,0-499,1)]
+                [new BaseAttrValue(2,500-999,1)]);
+          1、mybatis 能区分出 id（id不同就能代表要不要new对象封装数据）
+    -->
+    <!--    自定义结果集-->
     <resultMap id="AttrInfoAndValue"
                type="com.atguigu.gmall.model.product.BaseAttrInfo"
                autoMapping="true">
         <!--        用id标签区分出唯一id-->
         <id column="id" property="id"></id>
-<!--        <result column="attr_name" property="attrName"></result>-->
-<!--        <result column="category_id" property="categoryId"></result>-->
-<!--        <result column="category_level" property="categoryLevel"></result>-->
+        <!--        <result column="attr_name" property="attrName"></result>-->
+        <!--        <result column="category_id" property="categoryId"></result>-->
+        <!--        <result column="category_level" property="categoryLevel"></result>-->
         <collection
                 property="attrValueList"
                 ofType="com.atguigu.gmall.model.product.BaseAttrValue"
                 autoMapping="true">
-<!--  autoMapping: 数据库的列和JavaBean属性一一对应符合驼峰命名规则          -->
+            <!--  autoMapping: 数据库的列和JavaBean属性一一对应符合驼峰命名规则          -->
             <id column="vid" property="id"></id>
-<!--            <result column="value_name" property="valueName"></result>-->
-<!--            <result column="attr_id" property="attrId"></result>-->
+            <!--            <result column="value_name" property="valueName"></result>-->
+            <!--            <result column="attr_id" property="attrId"></result>-->
         </collection>
     </resultMap>
 
@@ -49,10 +50,17 @@
             resultMap="AttrInfoAndValue">
         select bai.*,bav.id vid,bav.value_name,bav.attr_id
         from base_attr_info bai
-           left join base_attr_value bav on bai.id = bav.attr_id
-        where
-            (bai.category_id=#{c1Id} and bai.category_level=1)
-          or (bai.category_id=#{c2Id} and bai.category_level=2)
-           or (bai.category_id=#{c3Id} and bai.category_level=3)
+        left join base_attr_value bav on bai.id = bav.attr_id
+        <where>
+            <if test="c1Id != 0">
+                (bai.category_id=#{c1Id} and bai.category_level=1)
+            </if>
+            <if test="c2Id != 0">
+                or (bai.category_id=#{c2Id} and bai.category_level=2)
+            </if>
+            <if test="c3Id != 0">
+                or (bai.category_id=#{c3Id} and bai.category_level=3)
+            </if>
+        </where>
     </select>
 </mapper>
