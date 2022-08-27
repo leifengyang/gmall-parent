@@ -22,3 +22,6 @@ app:
     ak: admin
     sk: admin123456
     bucket-name: gmall
+  thread-pool:
+    core: 4
+    max: 8

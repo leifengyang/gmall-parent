@@ -971,7 +971,7 @@
                 //根据索引替换已选中的spuSaleAttrValueId
                 this.selectValuesSkus[index] = spuSaleAttrValueId  // 115|117
 
-                var valuesSku = this.selectValuesSkus.join('|')
+                var valuesSku = this.selectValuesSkus.join('|') //115|117
                 //查看新组装的数据是否存在skuId，如果存在跳到该页面，如果不存在控制选中状态
                 // 44 = valuesSkuJson["115|117"]
                 var curSkuId = valuesSkuJson[valuesSku]

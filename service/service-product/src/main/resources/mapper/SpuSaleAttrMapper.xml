@@ -60,6 +60,25 @@
                  left join sku_sale_attr_value skuv
                            on ssav.id = skuv.sale_attr_value_id and skuv.sku_id=#{skuId}
         where ssa.spu_id=#{spuId}
-        order by ssa.id,ssav.id
+        order by ssa.base_sale_attr_id,ssav.id
+    </select>
+
+    <!--    复杂SQL数据库层就不能高并发，高并发就不能写复杂SQL，大数据：sql boy  Java: java boy-->
+    <select id="getAllSkuValueJson"
+            resultType="com.atguigu.gmall.model.to.ValueSkuJsonTo">
+        select a.sku_id,
+               GROUP_CONCAT(DISTINCT sale_attr_value_id
+                ORDER BY sale_attr_value_id ASC
+                SEPARATOR '|') as value_json
+        from (select si.id sku_id,
+                     skuav.id vid,
+                     skuav.spu_id,
+                     skuav.sale_attr_value_id,
+                     ssav.base_sale_attr_id
+              from sku_info  si
+                       left join sku_sale_attr_value skuav on si.id = skuav.sku_id
+                       left join spu_sale_attr_value ssav on skuav.sale_attr_value_id = ssav.id
+              WHERE si.spu_id=#{spuId} ORDER BY si.id,ssav.base_sale_attr_id,skuav.sale_attr_value_id) a
+        GROUP BY a.sku_id
     </select>
 </mapper>
