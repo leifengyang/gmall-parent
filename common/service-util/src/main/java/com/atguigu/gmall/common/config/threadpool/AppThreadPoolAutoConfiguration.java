@@ -56,7 +56,7 @@ public class AppThreadPoolAutoConfiguration {
                     int i = 0; //记录线程自增id
                     @Override
                     public Thread newThread(Runnable r) {
-                        Thread thread = new Thread(r);
+                        Thread thread = new Thread(r); //创建的线程要接受任务
                         thread.setName(applicationName+"[core-thread-"+ i++ +"]");
                         return thread;
                     }

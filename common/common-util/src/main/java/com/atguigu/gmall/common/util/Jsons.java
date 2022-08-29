@@ -21,4 +21,22 @@ public class Jsons {
             return null;
         }
     }
+
+    /**
+     * 把json转为对象
+     * @param jsonStr
+     * @param clz
+     * @param <T>
+     * @return
+     */
+    public static<T>  T toObj(String jsonStr, Class<T> clz) {
+        T t = null;
+        try {
+            t = mapper.readValue(jsonStr, clz);
+            return t;
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
