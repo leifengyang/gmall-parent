@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
+    <title>尚品汇 产品详情</title>
+    <link rel="icon" href="/img/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/css/all.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/pages-item.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/pages-zoom.css"/>
+
+    <div th:include="common/head :: head"></div>
+</head>
+
+<body>
+
+<!--页面顶部-->
+<div th:include="common/header :: header"></div>
+
+<div id="itemArray">
+   <h1>商品不存在</h1>
+</div>
+<script type="text/javascript" src="/js/plugins/sui/sui.min.js"></script>
+<script type="text/javascript" src="/js/plugins/jquery.jqzoom/jquery.jqzoom.js"></script>
+<script type="text/javascript" src="/js/plugins/jquery.jqzoom/zoom.js"></script>
+<script src="/js/api/activity.js"></script>
+<script src="/js/api/favorInfo.js"></script>
+<script src="/js/api/comment.js"></script>
+<script th:inline="javascript">
+    var item = new Vue({
+        el: '#itemArray',
+        data: {
+            skuId: [[${skuInfo.id}]],
+            spuId: [[${skuInfo.spuId}]],
+            valuesSku: '',
+            skuNum: 1,
+
+            selectValuesSkus: [],
+            isAddCart: true,
+
+            spuSaleAttrList: [[${spuSaleAttrList}]],
+            valuesSkuJson: [[${valuesSkuJson}]],
+            activityRuleList: [],
+            couponInfoList: [],
+
+            coupon: {
+                more: 0, // 0：隐藏  1：显示
+            },
+
+            favorLable: '关注',
+
+            commentList: [], // 列表
+            total: 0, // 数据库中的总记录数
+            page: 1, // 默认页码
+            limit: 10 // 每页记录数
+        },
+
+        created() {
+            this.init()
+        },
+
+        methods: {
+            init() {
+                this.spuSaleAttrList.forEach((spuSaleAttr, index) => {
+                    spuSaleAttr.index = index
+                    spuSaleAttr.spuSaleAttrValueList.forEach((spuSaleAttrValue) => {
+                        if (spuSaleAttrValue.isChecked == 1) {
+                            this.selectValuesSkus.push(spuSaleAttrValue.id)
+                        }
+                    })
+                })
+                console.log('this.valuesSku:' + this.valuesSku)
+
+                //初始化促销活动与优惠券
+                this.findActivityAndCoupon()
+
+                //是否关注
+                this.isFavor()
+
+                //评论列表
+                this.getCommentPageList(1)
+            },
+
+            addToCart() {
+                // 判断是否登录和是否存在临时用户，如果都没有，添加临时用户
+                if(!auth.isTokenExist() && !auth.isUserTempIdExist()) {
+                    auth.setUserTempId()
+                }
+
+                // 获取来源信息
+                var sourceType = 'query'
+                var key = 'sourceType_'+this.skuId
+                if(auth.isExist(key)) {
+                    sourceType = auth.getCookie(key)
+                    auth.removeCookie(key)
+                }
+
+                window.location.href = 'http://cart.gmall.com/addCart.html?skuId=' + this.skuId + '&skuNum=' + this.skuNum + '&sourceType=' + sourceType
+            },
+
+            spuSaleAttrFun(index, spuSaleAttrValueId) {
+                //  debugger
+                this.isAddCart = true
+                //  JSON.parse() : Json 字符串转换为对象！ {"115|117":"44","114|117":"45"}
+                var valuesSkuJson = JSON.parse(this.valuesSkuJson);
+
+                //根据索引替换已选中的spuSaleAttrValueId
+                this.selectValuesSkus[index] = spuSaleAttrValueId  // 115|117
+
+                var valuesSku = this.selectValuesSkus.join('|') //115|117
+                //查看新组装的数据是否存在skuId，如果存在跳到该页面，如果不存在控制选中状态
+                // 44 = valuesSkuJson["115|117"]
+                var curSkuId = valuesSkuJson[valuesSku]
+
+                if (curSkuId) {
+                    if(curSkuId != this.skuId) {
+                        window.location.href = '/' + curSkuId + '.html'
+                    } else {
+                        this.isAddCart = true
+                    }
+                } else {
+                    //控制购物车是否可选
+                    this.isAddCart = false
+                }
+
+                //控制销售属性是否选中
+                this.spuSaleAttrList.forEach((spuSaleAttr, i) => {
+                    spuSaleAttr.spuSaleAttrValueList.forEach((spuSaleAttrValue) => {
+                        if (index == i) {
+                            if (spuSaleAttrValueId == spuSaleAttrValue.id) {
+                                spuSaleAttrValue.isChecked = 1
+                            } else {
+                                spuSaleAttrValue.isChecked = 0
+                            }
+                        }
+                    })
+                })
+            },
+
+            add() {
+                this.skuNum += 1
+            },
+
+            down() {
+                if (this.skuNum > 1) {
+                    this.skuNum -= 1
+                }
+            },
+
+            compare(val1,val2){
+                return val1-val2;
+            },
+
+            couponMore() {
+                if(this.coupon.more == 0) {
+                    this.coupon.more = 1
+
+                    //动态设置右侧浮动层高度为浏览器可见区域高度，更多出现滚动条
+                    $(".jt-history-wrap").css("height", $(window).height()-5)
+                } else {
+                    this.coupon.more = 0
+                }
+            },
+
+            findActivityAndCoupon() {
+                activity.findActivityAndCoupon(this.skuId).then(response => {
+                    this.activityRuleList = response.data.data.activityRuleList
+                    this.couponInfoList = response.data.data.couponInfoList
+                })
+            },
+
+            getCouponInfo(couponId) {
+                activity.getCouponInfo(couponId).then(response => {
+                    this.couponInfoList.forEach(item => {
+                        if(couponId == item.id) {
+                            // 已领取
+                            item.isGet = 1
+                            // 未使用
+                            item.couponStatus = 'NOT_USED'
+                        }
+                    })
+                })
+            },
+
+            isFavor() {
+                favorInfo.isFavor(this.skuId).then(response => {
+                    if(response.data.data) {
+                        this.favorLable = '已关注'
+                    }
+                })
+            },
+
+            addFavor() {
+                var param = {
+                    spuId: this.spuId,
+                    skuId: this.skuId
+                }
+                favorInfo.add(param).then(response => {
+                    this.favorLable = '已关注'
+                })
+            },
+
+            getCommentPageList(page = 1) {
+                this.page = page
+                comment.getPageList(this.skuId, this.page, this.limit).then(response => {
+                    this.commentList = response.data.data.records
+                    this.total = response.data.data.total
+                })
+            }
+
+        }
+    })
+</script>
+</body>
+</html>

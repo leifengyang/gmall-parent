@@ -15,7 +15,9 @@ spring:
     username: root
     password: 123456
     driver-class-name: com.mysql.jdbc.Driver
-
+  redis:
+    host: 192.168.200.100
+    password: Lfy123456
 
 #自定义配置
 app:

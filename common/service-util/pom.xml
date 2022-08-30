@@ -37,10 +37,11 @@
         </dependency>
 
         <!-- redisson 分布式锁-->
+        <!-- https://mvnrepository.com/artifact/org.redisson/redisson -->
         <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson</artifactId>
-            <version>3.15.3</version>
+            <version>3.17.6</version>
         </dependency>
 
         <!--mybatis-plus-->

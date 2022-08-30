@@ -19,7 +19,9 @@ public class BloomFilterTest {
          * double fpp：false positive probability  误判率，越高，bloom存东西hash次数越多，占位越多
          */
         //1、创建出布隆过滤器
-        BloomFilter<Long> filter = BloomFilter.create(Funnels.longFunnel(), 10000, 0.0001);
+        BloomFilter<Long> filter = BloomFilter.create(Funnels.longFunnel(),
+                10000,
+                0.0001);
 
         //2、添数据
         for (long i=0;i<20;i++){

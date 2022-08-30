@@ -28,6 +28,12 @@ spring:
           predicates:  #断言
             - Path=/admin/product/**
 
+
+        - id: incr_route
+          uri: lb://service-item
+          predicates:
+            - Path=/lock/incr
+
         - id: web_all_route
           uri: lb://web-all
           predicates:
