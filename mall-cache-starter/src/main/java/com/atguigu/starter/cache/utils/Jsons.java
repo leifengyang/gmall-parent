@@ -1,11 +1,9 @@
-package com.atguigu.gmall.common.util;
+package com.atguigu.starter.cache.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.util.StringUtils;
-
-import java.util.Map;
 
 public class Jsons {
     private static ObjectMapper mapper = new ObjectMapper();

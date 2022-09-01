@@ -8,6 +8,7 @@
         <module>model</module>
         <module>service</module>
         <module>server-gateway</module>
+        <module>mall-cache-starter</module>
     </modules>
 
 

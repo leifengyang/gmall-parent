@@ -3,7 +3,6 @@ package com.atguigu.gmall.item.service.impl;
 import com.atguigu.gmall.common.constant.SysRedisConst;
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.common.util.Jsons;
-import com.atguigu.gmall.item.cache.CacheOpsService;
 import com.atguigu.gmall.item.feign.SkuDetailFeignClient;
 import com.atguigu.gmall.item.service.SkuDetailService;
 import com.atguigu.gmall.model.product.SkuImage;
@@ -11,6 +10,8 @@ import com.atguigu.gmall.model.product.SkuInfo;
 import com.atguigu.gmall.model.product.SpuSaleAttr;
 import com.atguigu.gmall.model.to.CategoryViewTo;
 import com.atguigu.gmall.model.to.SkuDetailTo;
+import com.atguigu.starter.cache.annotation.GmallCache;
+import com.atguigu.starter.cache.service.CacheOpsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -20,7 +21,6 @@ import org.springframework.util.StringUtils;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -60,6 +60,25 @@ public class SkuDetailServiceImpl implements SkuDetailService {
 
     @Autowired
     CacheOpsService cacheOpsService;
+
+
+    /**
+     * 表达式中的params代表方法的所有参数列表
+     * @param skuId
+     * @return
+     */
+    @GmallCache(
+            cacheKey =SysRedisConst.SKU_INFO_PREFIX+"#{#params[0]}",
+            bloomName = SysRedisConst.BLOOM_SKUID,
+            bloomValue = "#{#params[0]}",
+            lockName = SysRedisConst.LOCK_SKU_DETAIL+"#{#params[0]}"
+    )
+    @Override
+    public SkuDetailTo getSkuDetail(Long skuId) {
+        SkuDetailTo fromRpc = getSkuDetailFromRpc(skuId);
+        return fromRpc;
+    }
+
 
     //未缓存优化前 - 400/s
     public SkuDetailTo getSkuDetailFromRpc(Long skuId) {
@@ -164,8 +183,16 @@ public class SkuDetailServiceImpl implements SkuDetailService {
         return detailTo;
     }
 
-    @Override
-    public SkuDetailTo getSkuDetail(Long skuId) {
+
+
+    /**
+     *
+     * 切面点表达式怎么写？
+     *  execution(* com.atguigu.gmall.item.**.*(..))
+     * @param skuId
+     * @return
+     */
+    public SkuDetailTo getSkuDetailWithCache(Long skuId) {
         String cacheKey = SysRedisConst.SKU_INFO_PREFIX +skuId;
         //1、先查缓存
         SkuDetailTo cacheData = cacheOpsService.getCacheData(cacheKey,SkuDetailTo.class);
@@ -287,6 +314,8 @@ public class SkuDetailServiceImpl implements SkuDetailService {
         SkuDetailTo skuDetailTo = Jsons.toObj(jsonStr, SkuDetailTo.class);
         return skuDetailTo;
     }
+
+
 
 
 //    @Override  //使用本地缓存

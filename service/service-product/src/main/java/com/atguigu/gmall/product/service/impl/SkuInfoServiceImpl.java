@@ -77,6 +77,7 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
         skuSaleAttrValueService.saveBatch(saleAttrValueList);
 
         //把这个SkuId放到布隆过滤器中
+        //最大的缺点：只能新增
         RBloomFilter<Object> filter = redissonClient.getBloomFilter(SysRedisConst.BLOOM_SKUID);
         filter.add(skuId);
     }
