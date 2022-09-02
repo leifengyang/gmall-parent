@@ -11,19 +11,12 @@ spring:
   #  profiles:
 #    active: sharding,dev  #主文件 application.yaml 和激活的 application-{profile}.yaml 同时生效
 
-  zipkin:
-    base-url: http://192.168.200.100:9411/
-    sender:
-      type: web
   datasource:
     url: jdbc:mysql://192.168.200.100:3306/gmall_product?useSSL=false&characterEncoding=utf-8
     username: root
     password: 123456
     driver-class-name: com.mysql.jdbc.Driver
     type: com.zaxxer.hikari.HikariDataSource
-  redis:
-    host: 192.168.200.100
-    password: Lfy123456
 
 #自定义配置
 app:

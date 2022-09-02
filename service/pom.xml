@@ -94,6 +94,12 @@
             <artifactId>spring-cloud-starter-zipkin</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.atguigu.gmall</groupId>
+            <artifactId>feign-client</artifactId>
+            <version>1.0</version>
+        </dependency>
+
     </dependencies>
 
 

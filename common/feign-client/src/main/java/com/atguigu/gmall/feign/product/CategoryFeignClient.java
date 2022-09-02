@@ -1,4 +1,4 @@
-package com.atguigu.gmall.web.feign;
+package com.atguigu.gmall.feign.product;
 
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.model.to.CategoryTreeTo;
@@ -14,6 +14,7 @@ import java.util.List;
 
 @RequestMapping("/api/inner/rpc/product")
 @FeignClient("service-product")
+//service-product：当前客户端的名字，也是这个feign要发起远程调用时找的微服务的名字
 public interface CategoryFeignClient {
 
     /**

@@ -1,4 +1,4 @@
-package com.atguigu.gmall.web.feign;
+package com.atguigu.gmall.feign.item;
 
 
 import com.atguigu.gmall.common.result.Result;
