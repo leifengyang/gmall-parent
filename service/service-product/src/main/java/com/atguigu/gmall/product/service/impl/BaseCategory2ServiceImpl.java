@@ -51,7 +51,7 @@ public class BaseCategory2ServiceImpl extends ServiceImpl<BaseCategory2Mapper, B
     @Override
     public List<CategoryTreeTo> getAllCategoryWithTree() {
         System.out.println("查询三级分类树形数据...");
-
+        //2
         return baseCategory2Mapper.getAllCategoryWithTree();
     }
 }
