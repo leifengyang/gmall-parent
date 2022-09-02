@@ -72,5 +72,13 @@ public class SkuController {
         return Result.ok();
     }
 
+    /**
+     * 修改SKu信息
+     */
+    public void updateSkuInfo(SkuInfo skuInfo){
+//        skuInfoService.updateSkuInfo(skuInfo);
+//        cacheOpsService.delay2Delete(skuInfo.getId());
+    }
+
 
 }
