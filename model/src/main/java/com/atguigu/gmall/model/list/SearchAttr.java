@@ -11,10 +11,10 @@ public class SearchAttr {
     private Long attrId;
     // 平台属性值名称
     @Field(type = FieldType.Keyword)
-    private String attrValue;
+    private String attrValue;  //8寸
     // 平台属性名
     @Field(type = FieldType.Keyword)
-    private String attrName;
+    private String attrName; //屏幕尺寸
 
 
 }

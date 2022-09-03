@@ -22,7 +22,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class LockTestController {
 
     @Value("${aaa}")
-    String aaa;
+     String aaa;
     @GetMapping("/aaa")
     public String aaaValue(){
         return aaa;

@@ -40,4 +40,45 @@ public class ItemMainApplication {
     public static void main(String[] args) {
         SpringApplication.run(ItemMainApplication.class,args);
     }
+
+    public static void ddd(String[] args) throws InterruptedException {
+        Hello hello = new Hello();
+
+        //先启动...
+        new Thread(()->{
+            hello.hehe();  //a=false放到工作内存
+        }).start();
+
+        //启动a的改变线程
+        Thread.sleep(1000);
+        new Thread(()->{
+            hello.haha();
+            System.out.println("主内存是："+hello.a);
+        }).start();
+
+
+
+
+
+        Thread.sleep(10000000);
+    }
+
+
+    static class Hello {
+        volatile boolean a = false; //
+
+        public void haha(){
+            a = true;
+            System.out.println("a已经改了");
+        }
+
+        void hehe(){
+            //自旋
+            //代表每次可以从主存读最新数据,总线发现主内存数据变化，更新工作内存的数据
+            while (!a){ //一旦加了volatile,代表每次可以从主存读最新数据
+
+            }
+            System.out.println("a=true，程序中断....");
+        }
+    }
 }

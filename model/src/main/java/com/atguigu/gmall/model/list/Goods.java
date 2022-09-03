@@ -18,19 +18,23 @@ public class Goods {
     @Id
     private Long id;
 
+    //index = false；不用索引。
     @Field(type = FieldType.Keyword, index = false)
     private String defaultImg;
 
     //  es 中能分词的字段，这个字段数据类型必须是 text！keyword 不分词！
-    @Field(type = FieldType.Text, analyzer = "ik_max_word")
-    private String title;
+    @Field(type = FieldType.Text,
+            analyzer = "ik_max_word")
+    private String title; //sku的名字
 
     @Field(type = FieldType.Double)
     private Double price;
 
     //  @Field(type = FieldType.Date)   6.8.1
-    @Field(type = FieldType.Date,format = DateFormat.custom,pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date createTime; // 新品
+    @Field(type = FieldType.Date,
+            format = DateFormat.custom,
+            pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date createTime; // 新品。商品的上架时间
 
     @Field(type = FieldType.Long)
     private Long tmId;
@@ -66,6 +70,6 @@ public class Goods {
     // 平台属性集合对象
     // Nested 支持嵌套查询
     @Field(type = FieldType.Nested)
-    private List<SearchAttr> attrs;
+    private List<SearchAttr> attrs; //平台属性【CPU型号-骁龙888】。 xiaomi11
 
 }
