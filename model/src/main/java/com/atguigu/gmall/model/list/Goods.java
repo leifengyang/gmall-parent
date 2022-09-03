@@ -67,9 +67,11 @@ public class Goods {
     @Field(type = FieldType.Long)
     private Long hotScore = 0L;
 
-    // 平台属性集合对象
+    // 平台属性集合对象. 只要集合类型内部的对象需要参与检索，就用 Nested映射 + NestedQuery = 正确结果
     // Nested 支持嵌套查询
     @Field(type = FieldType.Nested)
     private List<SearchAttr> attrs; //平台属性【CPU型号-骁龙888】。 xiaomi11
+
+    //上架、检索 http://sph.atguigu.cn/
 
 }
