@@ -11,3 +11,9 @@ spring:
 
 #dsl:
 #  aaa: findhaHAdadada
+#  ALL --- TRACE --- DEBUG --- INFO --WARN -- ERROR --OFF
+logging:
+  level:
+    tracer: trace  #打开追踪器
+    org.elasticsearch: trace
+

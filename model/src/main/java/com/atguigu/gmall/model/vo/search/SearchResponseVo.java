@@ -1,6 +1,7 @@
 package com.atguigu.gmall.model.vo.search;
 
 import com.atguigu.gmall.model.list.Goods;
+
 import com.atguigu.gmall.model.list.SearchAttr;
 import com.atguigu.gmall.model.vo.search.SearchParamVo;
 import lombok.Data;

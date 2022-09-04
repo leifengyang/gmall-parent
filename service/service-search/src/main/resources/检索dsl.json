@@ -1,0 +1,49 @@
+{
+  "query": {
+    "bool": {
+      "must": [
+        {"term": {
+          "category2Id": {
+            "value": 61
+          }
+        }},
+        {"term": {
+          "tmId": {
+            "value": 4
+          }
+        }},
+        {"nested": {
+          "path": "attrs",
+          "query": {
+            "bool": {
+              "must": [
+                {"term": {
+                  "attrs.attrId": {
+                    "value": 4
+                  }
+                }},
+                {"term": {
+                  "attrs.attrValue": {
+                    "value": "128GB"
+                  }
+                }}
+              ]
+            }
+          }
+        }},
+        {"match": {
+          "title": "小米"
+        }}
+      ]
+    }
+  },
+  "sort": [
+    {
+      "price": {
+        "order": "asc"
+      }
+    }
+  ],
+  "from": 0,
+  "size": 8
+}

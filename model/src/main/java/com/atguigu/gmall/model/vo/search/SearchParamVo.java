@@ -11,8 +11,10 @@ public class SearchParamVo {
     Long category1Id;
     Long category2Id;
     String keyword;
-    String[] props;
     String trademark;
-    String order;
-    Integer pageNo;
+
+    String[] props;
+
+    String order = "1:desc";
+    Integer pageNo = 1;
 }
