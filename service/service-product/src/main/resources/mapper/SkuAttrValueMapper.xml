@@ -5,14 +5,29 @@
 <mapper namespace="com.atguigu.gmall.product.mapper.SkuAttrValueMapper">
 
     <resultMap id="BaseResultMap" type="com.atguigu.gmall.model.product.SkuAttrValue">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="attrId" column="attr_id" jdbcType="BIGINT"/>
-            <result property="valueId" column="value_id" jdbcType="BIGINT"/>
-            <result property="skuId" column="sku_id" jdbcType="BIGINT"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="attrId" column="attr_id" jdbcType="BIGINT"/>
+        <result property="valueId" column="value_id" jdbcType="BIGINT"/>
+        <result property="skuId" column="sku_id" jdbcType="BIGINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,attr_id,value_id,
+        id
+        ,attr_id,value_id,
         sku_id
     </sql>
+
+
+    <resultMap id="SearchAttrRM" type="com.atguigu.gmall.model.list.SearchAttr">
+        <id column="attr_id" property="attrId"></id>
+        <result column="attr_name" property="attrName"></result>
+        <result column="value_name" property="attrValue"></result>
+    </resultMap>
+    <select id="getSkuAttrNameAndValue" resultMap="SearchAttrRM">
+        select sav.*, bai.attr_name, bav.value_name
+        from sku_attr_value sav
+                 left join base_attr_info bai on sav.attr_id = bai.id
+                 left join base_attr_value bav on sav.value_id = bav.id
+        where sav.sku_id = #{skuId}
+    </select>
 </mapper>

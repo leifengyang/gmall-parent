@@ -3,6 +3,7 @@ package com.atguigu.gmall.search;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 
@@ -57,6 +58,7 @@ public class SearchMainApplication {
 
 
     public static void main(String[] args) {
+//        new ClassPathXmlApplicationContext();
         SpringApplication.run(SearchMainApplication.class,args);
     }
 }
