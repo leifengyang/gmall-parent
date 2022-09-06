@@ -117,6 +117,7 @@
                 login.login(this.user).then(response => {
                     //	debugger
                     if (response.data.code == 200) {
+						//response.data 代表整个Result对象
                         //  把token存在cookie中、也可以放在localStorage中
 						//	result.ok(map);
 						//	response 相当于Result

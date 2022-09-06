@@ -38,6 +38,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -80,6 +81,24 @@ public class GoodsServiceImpl implements GoodsService {
         //3、将搜索结果进行转换
         SearchResponseVo responseVo = buildSearchResponseResult(goods,paramVo);
         return responseVo;
+    }
+
+    @Override
+    public void updateHotScore(Long skuId, Long score) {
+
+        //1、找到商品
+        Goods goods = goodsRepository.findById(skuId).get();
+
+        //2、更新得分
+        goods.setHotScore(score);
+
+        //3、同步到es
+        goodsRepository.save(goods);
+
+        //https://www.elastic.co/guide/en/elasticsearch/reference/7.17/rest-apis.html
+        //ES可以发送修改DSL，只更新hotScore字段
+//        esRestTemplate.update();
+
     }
 
 

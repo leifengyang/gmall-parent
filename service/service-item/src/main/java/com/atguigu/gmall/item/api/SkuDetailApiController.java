@@ -2,6 +2,7 @@ package com.atguigu.gmall.item.api;
 
 
 import com.atguigu.gmall.common.result.Result;
+import com.atguigu.gmall.feign.search.SearchFeignClient;
 import com.atguigu.gmall.item.service.SkuDetailService;
 import com.atguigu.gmall.model.to.SkuDetailTo;
 import io.swagger.annotations.Api;
@@ -22,10 +23,15 @@ public class SkuDetailApiController {
     @Autowired
     SkuDetailService detailService;
 
+
+
     @GetMapping("/skudetail/{skuId}")
     public Result<SkuDetailTo> getSkuDetail(@PathVariable("skuId")Long skuId){
         //商品的详情
         SkuDetailTo skuDetailTo = detailService.getSkuDetail(skuId);
+
+        //更新热度分。攒一批更新一下。 100
+        detailService.updateHotScore(skuId);
 
         return Result.ok(skuDetailTo);
     }

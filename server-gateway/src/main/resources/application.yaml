@@ -34,6 +34,14 @@ spring:
           predicates:
             - Path=/lock/incr
 
+        - id: user_route
+          uri: lb://service-user
+          predicates:
+            - Path=/api/user/**
+
+
+
+
         - id: web_all_route
           uri: lb://web-all
           predicates:

@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface GoodsRepository extends ElasticsearchRepository<Goods,Long> {
 
 
+
+
 }
