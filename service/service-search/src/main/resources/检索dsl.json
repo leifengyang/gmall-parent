@@ -45,5 +45,54 @@
     }
   ],
   "from": 0,
-  "size": 8
+  "size": 8,
+  "aggs": {
+    "tmIdAgg": {
+      "terms": {
+        "field": "tmId",
+        "size": 1000
+      },
+      "aggs": {
+        "tmNameAgg": {
+          "terms": {
+            "field": "tmName",
+            "size": 1
+          }
+        },
+        "tmLogoAgg": {
+          "terms": {
+            "field": "tmLogoUrl",
+            "size": 1
+          }
+        }
+      }
+    },
+    "attrAgg": {
+      "nested": {
+        "path": "attrs"
+      },
+      "aggs": {
+        "attrIdAgg": {
+          "terms": {
+            "field": "attrs.attrId",
+            "size": 100
+          },
+          "aggs": {
+            "attrNameAgg": {
+              "terms": {
+                "field": "attrs.attrName",
+                "size": 1
+              }
+            },
+            "attrValueAgg": {
+              "terms": {
+                "field": "attrs.attrValue",
+                "size": 100
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
