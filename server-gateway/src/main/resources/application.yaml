@@ -49,3 +49,18 @@ spring:
 
 
 
+app:
+  auth:
+    no-auth-url:  #任意人无需登录都能访问的路径
+      - /css/**
+      - /js/**
+      - /img/**
+      - /login.html
+      - /api/user/passport/login
+
+    login-auth-url: #登录以后才能访问的资源
+      - /order/**
+    deny-url:
+      - /api/inner/**
+
+    login-page: http://passport.gmall.com/login.html

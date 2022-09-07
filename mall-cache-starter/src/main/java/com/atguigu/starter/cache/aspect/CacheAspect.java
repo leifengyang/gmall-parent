@@ -9,6 +9,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.ParserContext;
@@ -24,6 +25,7 @@ import java.lang.reflect.Type;
 
 @Aspect //申明这是一个切面
 @Component
+@Order(1) //数字越小优先级越高
 public class CacheAspect {
 
 

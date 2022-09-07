@@ -48,9 +48,10 @@ public class CategoryController {
      * @PostMapping：POST请求
      */
     @GetMapping("/getCategory1")
-    public Result getCategory1(){
+    public Result getCategory1() throws InterruptedException {
         // {code:2000,message:"ok",data: [{id:1},{id:2},{id:3}]}
         //利用MyBatisPlus提供好的CRUD方法，直接查出苏哟有一级分类
+//        Thread.sleep(3000);
         List<BaseCategory1> list = baseCategory1Service.list();
 
         //
