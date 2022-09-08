@@ -45,10 +45,42 @@ public class CartController {
 
         //1、把指定商品添加到购物车
         System.out.println("web-all 获取到的用户id：");
-        Result<SkuInfo> result = cartFeignClient.addToCart(skuId, skuNum);
-        model.addAttribute("skuInfo",result.getData());
-        model.addAttribute("skuNum",skuNum);
+        Result<Object> result = cartFeignClient.addToCart(skuId, skuNum);
+        if (result.isOk()) {
+            model.addAttribute("skuInfo",result.getData());
+            model.addAttribute("skuNum",skuNum);
+            return "cart/addCart";
+        }else {
+            String message = result.getMessage();
+            model.addAttribute("msg",result.getData());
+            return "cart/error";
+        }
 
-        return "cart/addCart";
+    }
+
+
+    /**
+     * 购物车列表页
+     * @return
+     */
+    @GetMapping("/cart.html")
+    public String cartHtml(){
+
+        return "cart/index";
+    }
+
+    /**
+     * 删除购物车中选中商品
+     * @return
+     */
+    @GetMapping("/cart/deleteChecked")
+    public String deleteChecked(){
+
+        /**
+         * redirect: 重定向
+         * forward: 转发
+         */
+        cartFeignClient.deleteChecked();
+        return "redirect:http://cart.gmall.com/cart.html";
     }
 }

@@ -3,6 +3,7 @@ server:
 spring:
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
-
+  main:
+    allow-bean-definition-overriding: true
 
 
