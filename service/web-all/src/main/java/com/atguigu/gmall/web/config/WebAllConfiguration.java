@@ -38,9 +38,13 @@ public class WebAllConfiguration {
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
             HttpServletRequest request = attributes.getRequest();
             String userId = request.getHeader(SysRedisConst.USERID_HEADER);
-
             //用户id头添加到feign的新情求中
             template.header(SysRedisConst.USERID_HEADER,userId);
+
+
+            //临时id也透传
+            String tempId = request.getHeader(SysRedisConst.USERTEMPID_HEADER);
+            template.header(SysRedisConst.USERTEMPID_HEADER,tempId);
 
         };
     }
