@@ -7,6 +7,8 @@ import com.atguigu.gmall.common.util.Jsons;
 import com.google.common.collect.Lists;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -24,6 +26,8 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 
 @Service
 public class CartServiceImpl implements CartService {
@@ -33,6 +37,9 @@ public class CartServiceImpl implements CartService {
 
     @Autowired
     SkuProductFeignClient skuFeignClient;
+
+    @Autowired
+    ThreadPoolExecutor executor;
 
     @Override
     public SkuInfo addToCart(Long skuId, Integer num) {
@@ -149,6 +156,19 @@ public class CartServiceImpl implements CartService {
                 .sorted((o1, o2) -> o2.getCreateTime().compareTo(o1.getCreateTime()))
                 .collect(Collectors.toList());
 
+        //顺便把购物车中所有商品的价格再次查询一遍进行更新。 异步不保证立即执行。
+        //不用等价格更新。 异步情况下拿不到老请求
+        //1、老请求
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        //【异步会导致feign丢失请求】
+        executor.submit( ()->  {
+            //2、绑定请求到到这个线程
+            RequestContextHolder.setRequestAttributes(requestAttributes);
+            updateCartAllItemsPrice(cartKey,infos);
+            //3、移除数据
+            RequestContextHolder.resetRequestAttributes();
+        });
+//        updateCartAllItemsPrice(cartKey,infos);
         return infos;
     }
 
@@ -201,8 +221,12 @@ public class CartServiceImpl implements CartService {
             hashOps.delete(ids.toArray());
         }
 
+        //stream 不是默认并发。默认串行；
+
 
     }
+
+
 
     @Override
     public List<CartInfo> getCheckedItems(String cartKey) {
@@ -239,6 +263,47 @@ public class CartServiceImpl implements CartService {
             }
         }
     }
+
+    @Override
+    public void updateCartAllItemsPrice(String cartKey, List<CartInfo> cartInfos) {
+        BoundHashOperations<String, String, String> cartOps =
+                redisTemplate.boundHashOps(cartKey);
+
+        System.out.println("更新价格启动："+Thread.currentThread());
+        //200个商品  4s
+        cartInfos.stream()
+            .forEach(cartInfo -> {
+                //1、查出最新价格  15ms
+                Result<BigDecimal> price = skuFeignClient.getSku1010Price(cartInfo.getSkuId());
+                //2、设置新价格
+                cartInfo.setSkuPrice(price.getData());
+                cartInfo.setUpdateTime(new Date());
+                //3、更新购物车价格  5ms
+                cartOps.put(cartInfo.getSkuId().toString(),Jsons.toStr(cartInfo));
+            });
+        System.out.println("更新价格结束："+Thread.currentThread());
+
+
+    }
+
+//    public static void main(String[] args) throws InterruptedException {
+//        List<Integer> list = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+//        System.out.println("main线程："+Thread.currentThread()+ "==>"+
+//                Runtime.getRuntime().availableProcessors());
+//        //流底层开启并发后使用默认 ForkJoinPool
+//        list.stream()
+//                .parallel() //线程数量和核心数量一样。队列
+//                .forEach(integer -> {
+//                    System.out.println("流线程："+Thread.currentThread());
+//                });
+//
+//        int submissionCount = ForkJoinPool.commonPool().getQueuedSubmissionCount();
+//        System.out.println(submissionCount);
+//
+////        ForkJoinPool.commonPool().getQueuedTaskCount() //64M
+//        Thread.sleep(100000000);
+//    }
+
 
 
     /**

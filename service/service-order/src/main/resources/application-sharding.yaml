@@ -1,0 +1,164 @@
+spring:
+  shardingsphere:
+    props:
+      sql-show: true
+
+    #管理6个数据源
+    datasource:
+      names: order_0_m,order_1_m,order_0_s1,order_0_s2,order_1_s1,order_1_s2
+      #order 0主库
+      order_0_m:
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        jdbcUrl: jdbc:mysql://192.168.200.100:3306/gmall_order_0?useSSL=false
+        username: root
+        password: 123456
+
+      order_0_s1:
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        jdbcUrl: jdbc:mysql://192.168.200.100:3307/gmall_order_0?useSSL=false
+        username: root
+        password: 123456
+
+      order_0_s2:
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        jdbcUrl: jdbc:mysql://192.168.200.100:3308/gmall_order_0?useSSL=false
+        username: root
+        password: 123456
+
+      #order 1主库
+      order_1_m:
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        jdbcUrl: jdbc:mysql://192.168.200.100:3306/gmall_order_1?useSSL=false
+        username: root
+        password: 123456
+
+      order_1_s1:
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        jdbcUrl: jdbc:mysql://192.168.200.100:3307/gmall_order_1?useSSL=false
+        username: root
+        password: 123456
+
+      order_1_s2:
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        jdbcUrl: jdbc:mysql://192.168.200.100:3308/gmall_order_1?useSSL=false
+        username: root
+        password: 123456
+
+    rules:
+      #读写分离
+      readwrite-splitting:
+        data-sources:
+          order0ds: #order 0库读写分离配置
+            type: Static
+            props:
+              write-data-source-name: order_0_m
+              read-data-source-names: order_0_s1,order_0_s2
+            load-balancer-name: haha
+
+          order1ds: #order 1库读写分离配置
+            type: Static
+            props:
+              write-data-source-name: order_1_m
+              read-data-source-names: order_1_s1,order_1_s2
+            load-balancer-name: haha
+        load-balancers:
+          haha:
+            type: ROUND_ROBIN
+
+      #分库分表  select * from order_info where user_id=2
+      sharding:
+        #默认的分库策略
+        default-database-strategy:
+          standard:
+            #分片列(分片键是数据库的那一列)
+            sharding-column: user_id
+            sharding-algorithm-name: user_id_mod2
+
+        #指定具有绑定关系的表
+        binding-tables:
+          - order_info,order_detail
+          - order_info,order_status_log
+
+
+        #定义分表规则. 定义每个逻辑表是怎么划分出真实表的 $->{} 动态取值
+        tables:
+          order_info:
+            # 逻辑源.真实表;
+            actual-data-nodes: order$->{0..1}ds.order_info_$->{0..2}
+            table-strategy:
+              standard:
+                sharding-column: user_id
+                sharding-algorithm-name: user_id_mod3_oi
+            key-generate-strategy:
+              column: id
+              key-generator-name: xuehua
+
+
+
+          order_detail:
+            actual-data-nodes: order$->{0..1}ds.order_detail_$->{0..2}
+            table-strategy:
+              standard:
+                sharding-column: user_id
+                sharding-algorithm-name: user_id_mod3_od
+            key-generate-strategy:
+              column: id
+              key-generator-name: xuehua
+
+          order_status_log:
+            actual-data-nodes: order$->{0..1}ds.order_status_log_$->{0..2}
+            table-strategy:
+              standard:
+                sharding-column: user_id
+                sharding-algorithm-name: user_id_mod3_os
+
+          payment_info:
+            actual-data-nodes: order$->{0..1}ds.payment_info_$->{0..2}
+            table-strategy:
+              standard:
+                sharding-column: user_id
+                sharding-algorithm-name: user_id_mod3_pi
+
+
+        #指定分片算法详细信息
+        sharding-algorithms:
+          #指定每种算法怎么算
+          user_id_mod2:
+            type: INLINE
+            props:  # 0,1
+              algorithm-expression: order$->{user_id % 2}ds
+
+
+          user_id_mod3_oi:
+            type: INLINE
+            props:
+              algorithm-expression: order_info_$->{user_id % 3}
+
+          user_id_mod3_od:
+            type: INLINE
+            props:
+              algorithm-expression: order_detail_$->{user_id % 3}
+
+          user_id_mod3_os:
+            type: INLINE
+            props: # 0,1
+              algorithm-expression: order_status_log_$->{user_id % 3}
+
+          user_id_mod3_pi:
+            type: INLINE
+            props: # 0,1
+              algorithm-expression: payment_info_$->{user_id % 3}
+        key-generators:
+          xuehua:
+            type: SNOWFLAKE
+            props:
+              worker-id: ${random.int(1000)}
+
+
+

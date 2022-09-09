@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 public class UserAddressServiceImpl extends ServiceImpl<UserAddressMapper, UserAddress>
     implements UserAddressService{
 
+
+
 }
 
 
