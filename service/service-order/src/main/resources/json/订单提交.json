@@ -1,0 +1,23 @@
+{
+  "consignee": "admin",
+  "consigneeTel": "123456789",
+  "deliveryAddress": "北京市昌平区北七家",
+  "paymentWay": "ONLINE",
+  "orderComment": "",
+  "orderDetailList": [
+    {
+      "imgUrl": "http://192.168.200.100:9000/gmall/2022-08-25/4c8be07b5e3e4954af6bc8c112e89809_2.png",
+      "skuName": "Apple iPhone 13 (A2634) 256GB 粉色 支持移动联通电信5G 双卡双待手机",
+      "orderPrice": 7999,
+      "skuNum": 2,
+      "hasStock": "0"
+    },
+    {
+      "imgUrl": "http://192.168.200.100:9000/gmall/2022-08-25/4fe52075a1104b5ba4b11ac15a4b79a8_1.png",
+      "skuName": "Apple iPhone 13 (A2634) 128GB 蓝色 支持移动联通电信5G 双卡双待手机",
+      "orderPrice": 5999,
+      "skuNum": 14,
+      "hasStock": "0"
+    }
+  ]
+}

@@ -23,4 +23,11 @@ public class SysRedisConst {
 
     //单个商品数量限制
     public static final Integer CART_ITEM_NUM_LIMIT = 200;
+
+    //订单防重令牌。只需要保存15min
+    public static final String ORDER_TEMP_TOKEN = "order:temptoken:"; //order:temptoken:交易号
+
+    //订单超时关闭时间
+    public static final Integer ORDER_CLOSE_TTL = 60*45; //秒为单位
+    public static final Integer ORDER_REFUND_TTL = 60*60*24*30;
 }

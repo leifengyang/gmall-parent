@@ -89,8 +89,7 @@ public interface CartService {
     /**
      * 更新这个购物车中所有商品的价格
      * @param cartKey
-     * @param cartInfos  所有的商品
      */
-    void updateCartAllItemsPrice(String cartKey,List<CartInfo> cartInfos);
+    void updateCartAllItemsPrice(String cartKey);
 
 }

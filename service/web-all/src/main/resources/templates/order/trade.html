@@ -96,7 +96,7 @@
 											<div class="num" th:text="'X'+${detail.skuNum}">{{item.skuNum}}</div>
 										</li>
 										<li class="yui3-u-1-12">
-											<div class="exit">有货</div>
+											<div class="exit" th:text="${detail.hasStock == '1'?'有货~':'无货~'}">有货</div>
 										</li>
 									</ul>
 
@@ -268,7 +268,7 @@
 
         methods: {
             init() {
-                debugger
+                // debugger
                 this.userAddressList.forEach((item) => {
                     item.selected = 0
                     if(item.isDefault == 1) {
@@ -293,7 +293,7 @@
             },
 
             selectAddress(addressId) {
-                debugger
+                // debugger
                 this.userAddressList.forEach((item) => {
                     if(item.id == addressId) {
                         item.selected = 1

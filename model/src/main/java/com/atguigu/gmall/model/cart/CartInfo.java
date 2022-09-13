@@ -70,6 +70,8 @@ public class CartInfo extends BaseEntity {
     private BigDecimal cartPrice;
     //第一次放入购物车时的价格
 
+
+
     //  优惠券信息列表
     @ApiModelProperty(value = "购物项对应的优惠券信息")
     @TableField(exist = false)

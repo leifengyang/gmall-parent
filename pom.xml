@@ -9,6 +9,7 @@
         <module>service</module>
         <module>server-gateway</module>
         <module>mall-cache-starter</module>
+        <module>ware-manage</module>
     </modules>
 
 
