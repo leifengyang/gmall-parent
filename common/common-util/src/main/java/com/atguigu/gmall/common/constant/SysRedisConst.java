@@ -30,4 +30,5 @@ public class SysRedisConst {
     //订单超时关闭时间
     public static final Integer ORDER_CLOSE_TTL = 60*45; //秒为单位
     public static final Integer ORDER_REFUND_TTL = 60*60*24*30;
+    public static final String MQ_RETRY = "mq:message:";
 }

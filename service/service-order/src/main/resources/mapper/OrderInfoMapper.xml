@@ -42,4 +42,14 @@
         original_total_amount,feight_fee,refundable_time
     </sql>
 
+    <update id="updateOrderStatus">
+        update order_info set
+            order_status=#{orderStatus},process_status=#{processStatus}
+            where id=#{orderId} and user_id=#{userId} and
+                  process_status IN
+                <foreach collection="expects" item="exp" open="(" close=")" separator=",">
+                    #{exp}
+                </foreach>
+    </update>
+
 </mapper>
