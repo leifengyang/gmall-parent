@@ -14,8 +14,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 订单关闭监听器
@@ -45,6 +43,7 @@ public class OrderCloseListener {
             log.error("订单关闭业务失败。消息：{}，失败原因：{}",orderMsg,e);
             //lua脚本
             Long aLong = redisTemplate.opsForValue().increment(SysRedisConst.MQ_RETRY + "order:" + orderMsg.getOrderId());
+            //重试消费10次
             if(aLong <= 10){
                 channel.basicNack(tag,false,true);
             }else {
@@ -52,9 +51,6 @@ public class OrderCloseListener {
                 redisTemplate.delete(SysRedisConst.MQ_RETRY + "order:" + orderMsg.getOrderId());
             }
         }
-
-
-
 
     }
 
