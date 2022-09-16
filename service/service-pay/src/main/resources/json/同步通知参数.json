@@ -1,0 +1,14 @@
+{
+  charset=utf-8,
+  out_trade_no=1663317024070_2,
+  method=alipay.trade.page.pay.return,
+  total_amount=15998.00,
+  sign=gmCQQ11lJM9hr8freferfrefr,
+  trade_no=2022091622001435030502093927, //当前订单在支付宝的唯一流水号
+  auth_app_id=2016092200568607,
+  version=1.0,
+  app_id=2016092200568607,
+  sign_type=RSA2,
+  seller_id=2088102176735660,
+  timestamp=2022-09-16
+}

@@ -22,11 +22,20 @@ import java.io.IOException;
 @Component
 public class OrderCloseListener {
 
-    @Autowired
+
     StringRedisTemplate redisTemplate;
 
-    @Autowired
+
     OrderBizService orderBizService;
+
+    public OrderCloseListener(StringRedisTemplate redisTemplate,
+                              OrderBizService orderBizService){
+        this.redisTemplate = redisTemplate;
+        this.orderBizService = orderBizService;
+    }
+
+    //prefetch: 4 一次拿四个； 默认一个个消费回复
+    //prefetch: 4 一次拿四个；batchSize: 4；开四个线程；4个线程没人拿一个消息。
 
     @RabbitListener(queues = MqConst.QUEUE_ORDER_DEAD)
     public void orderClose(Message message, Channel channel) throws IOException {

@@ -11,7 +11,7 @@ spring:
     password: 123456
     url: jdbc:mysql://192.168.200.100:3306/gmall_order?useSSL=false
     driver-class-name: com.mysql.jdbc.Driver
-#  rabbitmq:
+  rabbitmq:
 #    username: admin
 #    password: admin
 #    host: 192.168.200.100
@@ -19,12 +19,12 @@ spring:
 #    virtual-host: /
 #    publisher-returns: true #发布者返回（消息成功标志）
 #    publisher-confirm-type: simple #开启发布者简单确认机制
-#    listener: #监听器帮我们拿到消息。默认自动ack
+    listener: #监听器帮我们拿到消息。默认自动ack
 #      type: simple
-#      simple:
+      simple:
 #        acknowledge-mode: manual #开启手动确认机制，除非程序员自己ack，否则服务器都认为消息还未回复
-#        batch-size: 12
-
+        batch-size: 4
+        prefetch: 4
 
 
 
@@ -34,3 +34,8 @@ spring:
 
 app:
   ware-url: http://localhost:9001/
+
+
+feign:
+  sentinel:
+    enabled: true
