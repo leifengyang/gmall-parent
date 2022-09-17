@@ -70,8 +70,7 @@ public class PayController {
         boolean b = alipayService.rsaCheckV1(param);
         if(b){
             log.info("异步通知抵达。支付成功，验签通过。数据：{}", Jsons.toStr(param));
-            //TODO 修改订单状态。用到支付最大努力通知
-
+            alipayService.sendPayedMsg(param);
 
         }else {
             return "error";

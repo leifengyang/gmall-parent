@@ -124,6 +124,27 @@ public class OrderEventMqConfiguration {
     }
 
 
+    /**
+     * 支付成功单队列
+     */
+    @Bean
+    public Queue payedQueue(){
+        return new Queue(MqConst.QUEUE_ORDER_PAYED,
+                true,
+                false,
+                false);
+    }
+
+    @Bean
+    public Binding payedQueueBinding(){
+        return new Binding(MqConst.QUEUE_ORDER_PAYED,
+                Binding.DestinationType.QUEUE,
+                MqConst.EXCHANGE_ORDER_EVNT,
+                MqConst.RK_ORDER_PAYED,
+                null);
+    }
+
+
 
 
 

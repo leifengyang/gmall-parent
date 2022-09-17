@@ -5,6 +5,7 @@ import com.atguigu.gmall.common.util.Jsons;
 import com.atguigu.gmall.constant.MqConst;
 import com.atguigu.gmall.model.to.mq.OrderMsg;
 import com.atguigu.gmall.order.biz.OrderBizService;
+import com.atguigu.gmall.service.RabbitService;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
@@ -24,14 +25,15 @@ public class OrderCloseListener {
 
 
     StringRedisTemplate redisTemplate;
-
-
     OrderBizService orderBizService;
+    RabbitService rabbitService;
 
     public OrderCloseListener(StringRedisTemplate redisTemplate,
-                              OrderBizService orderBizService){
+                              OrderBizService orderBizService,
+                              RabbitService rabbitService){
         this.redisTemplate = redisTemplate;
         this.orderBizService = orderBizService;
+        this.rabbitService = rabbitService;
     }
 
     //prefetch: 4 一次拿四个； 默认一个个消费回复
@@ -50,15 +52,8 @@ public class OrderCloseListener {
             channel.basicAck(tag,false);
         }catch (Exception e){
             log.error("订单关闭业务失败。消息：{}，失败原因：{}",orderMsg,e);
-            //lua脚本
-            Long aLong = redisTemplate.opsForValue().increment(SysRedisConst.MQ_RETRY + "order:" + orderMsg.getOrderId());
-            //重试消费10次
-            if(aLong <= 10){
-                channel.basicNack(tag,false,true);
-            }else {
-                channel.basicNack(tag,false,false); //不入队
-                redisTemplate.delete(SysRedisConst.MQ_RETRY + "order:" + orderMsg.getOrderId());
-            }
+            String uniqKey = SysRedisConst.MQ_RETRY + "order:" + orderMsg.getOrderId();
+            rabbitService.retryConsumMsg(10L,uniqKey,tag,channel);
         }
 
     }

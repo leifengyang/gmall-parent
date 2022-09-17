@@ -56,7 +56,6 @@ public class WareConsumer {
         wareOrderTask.setTaskStatus(TaskStatus.PAID.name());
         gwareService.saveWareOrderTask(wareOrderTask);
         // 检查是否拆单！
-        //
         List<WareOrderTask> wareSubOrderTaskList = gwareService.checkOrderSplit(wareOrderTask);
         if (wareSubOrderTaskList != null && wareSubOrderTaskList.size() >= 2) {
             for (WareOrderTask orderTask : wareSubOrderTaskList) {

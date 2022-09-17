@@ -11,6 +11,7 @@ import com.atguigu.gmall.model.order.OrderDetail;
 import com.atguigu.gmall.model.to.mq.OrderMsg;
 import com.atguigu.gmall.model.vo.order.CartInfoVo;
 import com.atguigu.gmall.order.service.OrderDetailService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
 import java.util.Date;
 import java.util.List;
@@ -74,6 +75,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         return orderInfo.getId();
     }
 
+    @Transactional
     @Override
     public void changeOrderStatus(Long orderId, Long userId,
                                   ProcessStatus closed,
@@ -85,6 +87,24 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 
         //幂等修改订单
         orderInfoMapper.updateOrderStatus(orderId,userId,processStatus,orderStatus,expects);
+    }
+
+    @Override
+    public OrderInfo getOrderInfoByOutTradeNoAndUserId(String outTradeNo, Long userId) {
+        LambdaQueryWrapper<OrderInfo> wrapper = new LambdaQueryWrapper<OrderInfo>()
+                .eq(OrderInfo::getUserId, userId)
+                .eq(OrderInfo::getOutTradeNo, outTradeNo);
+        OrderInfo info = orderInfoMapper.selectOne(wrapper);
+        return info;
+    }
+
+    @Override
+    public OrderInfo getOrderInfoByOrderIdAndUserId(Long orderId, Long userId) {
+        LambdaQueryWrapper<OrderInfo> wrapper = new LambdaQueryWrapper<OrderInfo>()
+                .eq(OrderInfo::getUserId, userId)
+                .eq(OrderInfo::getId, orderId);
+        OrderInfo info = orderInfoMapper.selectOne(wrapper);
+        return info;
     }
 
     /**

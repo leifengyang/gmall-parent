@@ -92,7 +92,7 @@ public class OrderInfo extends BaseEntity {
     @TableField("img_url")
     private String imgUrl;
 
-    @TableField(exist = false)
+    @TableField(exist = false) //订单明细数据
     private List<OrderDetail> orderDetailList;
 
     @TableField(exist = false)

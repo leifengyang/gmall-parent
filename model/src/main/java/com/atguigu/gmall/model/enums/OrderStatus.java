@@ -4,6 +4,7 @@ public enum OrderStatus {
     UNPAID("未支付"),
     PAID("已支付" ),
     WAITING_DELEVER("待发货"),
+    WAITING_SCHEDULE("正在调货"),
     DELEVERED("已发货"),
     CLOSED("已关闭"),
     FINISHED("已完结") ,
