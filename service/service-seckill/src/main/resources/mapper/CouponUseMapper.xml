@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.gmall.seckill.mapper.CouponUseMapper">
+
+    <resultMap id="BaseResultMap" type="com.atguigu.gmall.model.activity.CouponUse">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="couponId" column="coupon_id" jdbcType="BIGINT"/>
+            <result property="userId" column="user_id" jdbcType="BIGINT"/>
+            <result property="orderId" column="order_id" jdbcType="BIGINT"/>
+            <result property="couponStatus" column="coupon_status" jdbcType="VARCHAR"/>
+            <result property="getTime" column="get_time" jdbcType="TIMESTAMP"/>
+            <result property="usingTime" column="using_time" jdbcType="TIMESTAMP"/>
+            <result property="usedTime" column="used_time" jdbcType="TIMESTAMP"/>
+            <result property="expireTime" column="expire_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,coupon_id,user_id,
+        order_id,coupon_status,get_time,
+        using_time,used_time,expire_time
+    </sql>
+</mapper>

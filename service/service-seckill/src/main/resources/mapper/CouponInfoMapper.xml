@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.gmall.seckill.mapper.CouponInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.atguigu.gmall.model.activity.CouponInfo">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="couponName" column="coupon_name" jdbcType="VARCHAR"/>
+            <result property="couponType" column="coupon_type" jdbcType="VARCHAR"/>
+            <result property="conditionAmount" column="condition_amount" jdbcType="DECIMAL"/>
+            <result property="conditionNum" column="condition_num" jdbcType="BIGINT"/>
+            <result property="activityId" column="activity_id" jdbcType="BIGINT"/>
+            <result property="benefitAmount" column="benefit_amount" jdbcType="DECIMAL"/>
+            <result property="benefitDiscount" column="benefit_discount" jdbcType="DECIMAL"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="rangeType" column="range_type" jdbcType="VARCHAR"/>
+            <result property="limitNum" column="limit_num" jdbcType="INTEGER"/>
+            <result property="takenCount" column="taken_count" jdbcType="INTEGER"/>
+            <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
+            <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
+            <result property="operateTime" column="operate_time" jdbcType="TIMESTAMP"/>
+            <result property="expireTime" column="expire_time" jdbcType="TIMESTAMP"/>
+            <result property="rangeDesc" column="range_desc" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,coupon_name,coupon_type,
+        condition_amount,condition_num,activity_id,
+        benefit_amount,benefit_discount,create_time,
+        range_type,limit_num,taken_count,
+        start_time,end_time,operate_time,
+        expire_time,range_desc
+    </sql>
+</mapper>

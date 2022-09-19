@@ -38,4 +38,15 @@ public class MqConst {
 
     //库存扣减路由键
     public static final String RK_WARE_ORDER = "ware.order";
+
+
+    //等待扣库存的秒杀单队列
+    public static final String QUEUE_SECKILL_ORDERWAIT = "seckill-orderwait-queue";
+    public static final String RK_SECKILL_ORDERWAIT = "seckill.order.wait";
+    public static final String EXCHANGE_SECKILL_EVENT = "seckill-event-exchange";
+
+
+    //秒杀订单创建队列
+    public static final String RK_ORDER_SECKILLOK = "order.seckill.created";
+    public static final String QUEUE_ORDER_SECKILLOK = "order-seckill-create-queue";
 }
