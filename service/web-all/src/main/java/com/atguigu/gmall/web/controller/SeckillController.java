@@ -4,6 +4,7 @@ package com.atguigu.gmall.web.controller;
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.feign.seckill.SeckillFeignClient;
 import com.atguigu.gmall.model.activity.SeckillGoods;
+import com.atguigu.gmall.model.vo.seckill.SeckillOrderConfirmVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -61,5 +62,22 @@ public class SeckillController {
         model.addAttribute("skuId",skuId);
         model.addAttribute("skuIdStr",skuIdStr);
         return "seckill/queue";
+    }
+
+    ///
+    @GetMapping("/seckill/trade.html")
+    public String trade(Model model,@RequestParam("skuId") Long skuId){
+
+        Result<SeckillOrderConfirmVo> confirmVo =
+                seckillFeignClient.getSeckillOrderConfirmVo(skuId);
+
+        SeckillOrderConfirmVo voData = confirmVo.getData();
+        //返回的是订单确认页的数据
+        model.addAttribute("detailArrayList",voData.getTempOrder().getOrderDetailList());
+        model.addAttribute("userAddressList",voData.getUserAddressList());
+        model.addAttribute("totalNum",voData.getTempOrder().getOrderDetailList().size());
+
+        model.addAttribute("totalAmount",voData.getTempOrder().getTotalAmount());
+        return "seckill/trade";
     }
 }

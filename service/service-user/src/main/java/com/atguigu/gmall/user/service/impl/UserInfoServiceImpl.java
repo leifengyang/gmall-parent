@@ -39,7 +39,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo>
         //1、查数据库
         LambdaQueryWrapper<UserInfo> wrapper = new LambdaQueryWrapper<>();
 
-        wrapper.eq(UserInfo::getName,info.getLoginName())
+        wrapper.eq(UserInfo::getLoginName,info.getLoginName())
                 .eq(UserInfo::getPasswd,MD5.encrypt(info.getPasswd()));
 
         UserInfo userInfo = userInfoMapper.selectOne(wrapper);

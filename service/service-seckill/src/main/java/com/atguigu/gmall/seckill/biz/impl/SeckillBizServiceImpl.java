@@ -1,9 +1,15 @@
 package com.atguigu.gmall.seckill.biz.impl;
 import java.math.BigDecimal;
 
+import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.constant.MqConst;
+import com.atguigu.gmall.feign.order.OrderFeignClient;
+import com.atguigu.gmall.feign.user.UserFeignClient;
+import com.atguigu.gmall.model.enums.ProcessStatus;
 import com.atguigu.gmall.model.order.OrderDetail;
 import com.atguigu.gmall.model.to.mq.SeckillTempOrderMsg;
+import com.atguigu.gmall.model.user.UserAddress;
+import com.atguigu.gmall.model.vo.seckill.SeckillOrderConfirmVo;
 import com.google.common.collect.Lists;
 import com.atguigu.gmall.model.activity.CouponInfo;
 
@@ -23,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -124,9 +131,6 @@ public class SeckillBizServiceImpl implements SeckillBizService {
             //秒杀商品已经没有了
             return ResultCodeEnum.SECKILL_FINISH;
         }
-        //内存状态位-1
-        detail.setStockCount(detail.getStockCount() - 1);
-
 
 
         //5、判断这个请求是否已经发送过了。 seckill:code
@@ -141,6 +145,8 @@ public class SeckillBizServiceImpl implements SeckillBizService {
         //4.1）、先让redis预扣库存  seckill:goods:stock:49
         Long decrement = redisTemplate.opsForValue().decrement(SysRedisConst.CACHE_SECKILL_GOODS_STOCK + skuId);
         if(decrement >= 0){
+            //内存状态位-1
+            detail.setStockCount(detail.getStockCount() - 1);
             //说明redis扣减库存成功，发个消息，数据库自己慢慢创建秒杀订单去
             //4.2）、再让数据库真正去下秒杀单，去扣减；
             OrderInfo orderInfo = prepareTempSeckillOrder(skuId);
@@ -161,10 +167,115 @@ public class SeckillBizServiceImpl implements SeckillBizService {
 
     @Override
     public ResultCodeEnum checkSeckillOrderStatus(Long skuId) {
+        Long userId = AuthUtils.getCurrentAuthInfo().getUserId();
+        String code = MD5.encrypt(userId + "_" + skuId + "_" + DateUtil.formatDate(new Date()));
+        //订单状态检查
 
-        //TODO 订单状态检查
+        String json = redisTemplate.opsForValue().get(SysRedisConst.SECKILL_ORDER + code);
+        if(json == null){
+            return ResultCodeEnum.SECKILL_RUN;
+        }
+        if("x".equals(json)){
+            return ResultCodeEnum.SECKILL_FINISH;
+        }
 
-        return ResultCodeEnum.SECKILL_FINISH;
+        OrderInfo info = Jsons.toObj(json, OrderInfo.class);
+
+        //1、是否已经下过单.
+        if(info.getId()!=null && info.getId() > 0){
+            return ResultCodeEnum.SECKILL_ORDER_SUCCESS;
+        }
+
+        //2、是否是抢单成功
+        if(info.getOperateTime() != null){
+            return ResultCodeEnum.SECKILL_SUCCESS;
+        }
+
+        //只要是成功状态就会继续查询最终状态
+        return ResultCodeEnum.SUCCESS;
+    }
+
+
+    @Autowired
+    UserFeignClient userFeignClient;
+
+    @Override
+    public SeckillOrderConfirmVo getSeckillOrderConfirmVo(Long skuId) {
+        SeckillOrderConfirmVo confirmVo = null;
+
+        Long userId = AuthUtils.getCurrentAuthInfo().getUserId();
+        String code = MD5.encrypt(userId + "_" + skuId + "_" + DateUtil.formatDate(new Date()));
+
+        String json = redisTemplate.opsForValue().get(SysRedisConst.SECKILL_ORDER + code);
+        if(!StringUtils.isEmpty(json) && !"x".equals(json)){ //x
+            OrderInfo info = Jsons.toObj(json, OrderInfo.class);
+            confirmVo = new SeckillOrderConfirmVo();
+
+            confirmVo.setTempOrder(info);
+            confirmVo.setTotalNum(info.getOrderDetailList().size());
+            confirmVo.setTotalAmount(info.getTotalAmount());
+            //用户的收货地址
+            Result<List<UserAddress>> addressList = userFeignClient.getUserAddressList();
+            confirmVo.setUserAddressList(addressList.getData());
+        }
+
+        return confirmVo;
+    }
+
+
+    @Autowired
+    OrderFeignClient orderFeignClient;
+    @Override
+    public Long submitSeckillOrder(OrderInfo orderInfo) {
+        OrderInfo dbOrder = prepareAndSaveOrderInfoForDb(orderInfo);
+
+
+        return dbOrder.getId();
+    }
+
+    private OrderInfo prepareAndSaveOrderInfoForDb(OrderInfo orderInfo) {
+        OrderInfo redisData = null;
+        Long skuId = orderInfo.getOrderDetailList().get(0).getSkuId();
+        Long userId = AuthUtils.getCurrentAuthInfo().getUserId();
+        String code = MD5.encrypt(userId + "_" + skuId + "_" + DateUtil.formatDate(new Date()));
+        //1、从redis拿到临时单数据
+        String json = redisTemplate.opsForValue().get(SysRedisConst.SECKILL_ORDER + code);
+        if(!StringUtils.isEmpty(json) && !"x".equals(json)){
+            //2、获取临时单数据
+            redisData = Jsons.toObj(json, OrderInfo.class);
+            redisData.setConsignee(orderInfo.getConsignee());
+            redisData.setConsigneeTel(orderInfo.getConsigneeTel());
+            redisData.setOrderStatus(ProcessStatus.UNPAID.getOrderStatus().name());
+
+            redisData.setDeliveryAddress(orderInfo.getDeliveryAddress());
+            redisData.setOrderComment(orderInfo.getOrderComment());
+
+            redisData.setOutTradeNo(System.currentTimeMillis() + "_" +userId);
+
+            redisData.setCreateTime(new Date());
+            Date date = new Date(System.currentTimeMillis() + 1000 * 60 * 15L);
+            redisData.setExpireTime(date);
+            redisData.setProcessStatus(ProcessStatus.UNPAID.name());
+
+            //订单明细表
+
+            redisData.setActivityReduceAmount(new BigDecimal("0"));
+            redisData.setCouponAmount(new BigDecimal("0"));
+            redisData.setOriginalTotalAmount(new BigDecimal("0"));
+            redisData.setRefundableTime(new Date());
+            redisData.setFeightFee(new BigDecimal("0"));
+            redisData.setOperateTime(new Date());
+
+            //远程保存订单
+            Result<Long> result = orderFeignClient.submitSeckillOrder(redisData);
+            redisData.setId(result.getData());
+            //更新到redis
+            redisTemplate.opsForValue().set(
+                    SysRedisConst.SECKILL_ORDER+code,
+                    Jsons.toStr(redisData));
+        }
+
+        return redisData;
     }
 
     private OrderInfo prepareTempSeckillOrder(Long skuId) {

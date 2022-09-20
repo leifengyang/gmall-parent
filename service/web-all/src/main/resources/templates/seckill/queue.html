@@ -28,7 +28,7 @@
     </div>
     <div class="seckill_dev" v-if="show == 3">
         抢购成功&nbsp;&nbsp;
-        <a href="/seckill/trade.html" target="_blank">去下单</a>
+        <a th:href="@{/seckill/trade.html(skuId=${skuId})}" target="_blank">去下单</a>
     </div>
     <div class="seckill_dev" v-if="show == 4">
         抢购成功&nbsp;&nbsp;

@@ -32,8 +32,8 @@ public class SeckillGoodsUpService {
     /**
      * 每天晚上2：00 上架 当天需要参与秒杀的所有商品
      */
-    @Scheduled(cron = "0 0 2 * * ?")
-//    @Scheduled(cron = "0 * * * * ?")
+//    @Scheduled(cron = "0 0 2 * * ?")
+    @Scheduled(cron = "0 * * * * ?")
     public void upSeckillGoods(){
         log.info("正在上架秒杀商品...");
         //查询当天需要参与秒杀的所有商品
